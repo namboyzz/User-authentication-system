@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import User from '../models/User.js';
 import jwt from 'jsonwebtoken';
 import Session from '../models/Session.js';
+import crypto from 'crypto';
 
 const ACCESS_TOKEN_TTL = '15m' // 15 phut
 
@@ -33,7 +34,7 @@ export const Register = async(req, res)=>{
 
         return res.sendStatus(204)
     }catch(error){
-        console.error('Login error', error);
+        console.error('Register error', error);
         return res.status(500).json({message: "System error"});
     }
 
@@ -43,8 +44,8 @@ export const Login = async(req, res)=>{
     try{
         // lay input    
         const {username, password, email, firstName, lastName} = req.body;
-        if(!username || !password || !email || !firstName || !lastName){
-            return res.status(400).json({message: "Missing required username, password, email, firstName, lastName"});
+        if(!username || !password ){
+            return res.status(400).json({message: "Missing required username, password"});
         }
 
         // lay hash password tu database de so voi password nguoi dung nhap vao
