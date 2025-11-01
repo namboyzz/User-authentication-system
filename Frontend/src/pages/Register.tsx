@@ -2,7 +2,7 @@
 const Register = () => {
   return (
     <div>
-      
+      123
     </div>
   )
 }
