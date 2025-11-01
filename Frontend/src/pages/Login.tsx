@@ -1,4 +1,4 @@
-import LoginForm from "../components/auth/LoginForm";
+import { LoginForm } from "@/components/auth/LoginForm";
 
 const Login = () => {
   return (
@@ -6,7 +6,7 @@ const Login = () => {
       <div className="w-full max-w-sm md:max-w-4xl">
         <LoginForm />
       </div>
-    </div>
+    </div>  
   );
 };
 

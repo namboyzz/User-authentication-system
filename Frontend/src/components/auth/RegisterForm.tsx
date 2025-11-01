@@ -9,31 +9,37 @@ import { useNavigate } from "react-router";
 import { Label } from "../ui/label";
 import { useAuthStore } from "@/stores/useAuthStore";
 
-const loginSchema = z.object({
+const registerSchema = z.object({
+  firstname: z.string().min(1, "Tên bắt buộc phải có"),
+  lastname: z.string().min(1, "Họ bắt buộc phải có"),
   username: z.string().min(3, "Tên đăng nhập phải có ít nhất 3 ký tự"),
+  email: z.email("Email không hợp lệ"),
   password: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
 });
 
-type LoginFormValues = z.infer<typeof loginSchema>;
+type RegisterFormValues = z.infer<typeof registerSchema>;
 
-export function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
-  const { Login } = useAuthStore();
+export function RegisterForm({ className, ...props }: React.ComponentProps<"div">) {
+  const { Register } = useAuthStore();
   const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
+  } = useForm<RegisterFormValues>({
+    resolver: zodResolver(registerSchema),
   });
 
-  const onSubmit = async (data: LoginFormValues) => {
-    const {  username, password } = data;
+  const onSubmit = async (data: RegisterFormValues) => {
+    const { firstname, lastname, username, email, password } = data;
+    
+    // gọi backend để signup
+    await Register(username, password, email, firstname, lastname);
 
-    // gọi backend để login
-    await Login(username, password);
+    setTimeout(() => {
+      navigate("/login");
+    }, 1500);
 
-    navigate("/");
   };
 
   return (
@@ -66,6 +72,47 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
                 </p>
               </div>
 
+              {/* họ & tên */}
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <Label
+                    htmlFor="lastname"
+                    className="block text-sm"
+                  >
+                    Họ
+                  </Label>
+                  <Input
+                    type="text"
+                    id="lastname"
+                    {...register("lastname")}
+                  />
+
+                  {errors.lastname && (
+                    <p className="text-destructive text-sm">
+                      {errors.lastname.message}
+                    </p>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <Label
+                    htmlFor="fistname"
+                    className="block text-sm"
+                  >
+                    Tên
+                  </Label>
+                  <Input
+                    type="text"
+                    id="firstname"
+                    {...register("firstname")}
+                  />
+                  {errors.firstname && (
+                    <p className="text-destructive text-sm">
+                      {errors.firstname.message}
+                    </p>
+                  )}
+                </div>
+              </div>
+
               {/* username */}
               <div className="flex flex-col gap-3">
                 <Label
@@ -84,6 +131,25 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
                   <p className="text-destructive text-sm">
                     {errors.username.message}
                   </p>
+                )}
+              </div>
+
+              {/* email */}
+              <div className="flex flex-col gap-3">
+                <Label
+                  htmlFor="email"
+                  className="block text-sm"
+                >
+                  Email
+                </Label>
+                <Input
+                  type="email"
+                  id="email"
+                  placeholder="m@gmail.com"
+                  {...register("email")}
+                />
+                {errors.email && (
+                  <p className="text-destructive text-sm">{errors.email.message}</p>
                 )}
               </div>
 
@@ -107,29 +173,29 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
                 )}
               </div>
 
-              {/* nút đăng nhap */}
+              {/* nút đăng ký */}
               <Button
                 type="submit"
                 className="w-full"
                 disabled={isSubmitting}
               >
-                Đăng nhập
+                Tạo tài khoản
               </Button>
 
               <div className="text-center text-sm">
-                Chưa có tài khoản?{" "}
+                Đã có tài khoản?{" "}
                 <a
-                  href="/register"
+                  href="/login"
                   className="underline underline-offset-4"
                 >
-                  Đăng ký
+                  Đăng nhập
                 </a>
               </div>
             </div>
           </form>
           <div className="bg-muted relative hidden md:block">
             <img
-              src="/placeholder.png"
+              src="/placeholderSignUp .png"
               alt="Image"
               className="absolute top-1/2 -translate-y-1/2 object-cover"
             />

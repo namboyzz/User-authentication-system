@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router"
 import Login from "./pages/Login"
 import Register from "./pages/Register"
 import ChatAppPage from "./pages/ChatAppPage"
+import ProtectedRoute from "./components/auth/ProtectedRoute"
 
 function App() {
 
@@ -15,8 +16,9 @@ function App() {
       {/* protected routes */}
 
 
-      {/* todo: protected routes */}
-      <Route path="/" element={<ChatAppPage />} />
+      <Route element={<ProtectedRoute />}>
+        <Route path="/" element={<ChatAppPage />} />
+      </Route>
 
 
     </Routes>

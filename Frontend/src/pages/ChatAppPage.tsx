@@ -1,10 +1,15 @@
+import Logout from "@/components/auth/Logout";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 const ChatAppPage = () => {
+  const user = useAuthStore((s) => s.user);
+
   return (
     <div>
-      <h1>123</h1>
+      {user?.username}
+      <Logout />
     </div>
-  )
-}
+  );
+};
 
-export default ChatAppPage
+export default ChatAppPage;
